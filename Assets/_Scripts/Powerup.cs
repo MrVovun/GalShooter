@@ -5,6 +5,8 @@ using UnityEngine;
 public class Powerup : MonoBehaviour {
     [SerializeField]
     private float _speed = 2.0f;
+    [SerializeField]
+    private int powerupID;
 
 	void Update () {
         transform.Translate(Vector3.down * Time.deltaTime * _speed);
@@ -18,7 +20,18 @@ public class Powerup : MonoBehaviour {
             if (_player != null)
 
             {
-                _player.TripleShotOn();
+                if (powerupID == 0)
+                {
+                    _player.TripleShotOn();
+                }
+                else if (powerupID == 1)
+                {
+                    _player.SpeedBoostOn();
+                }
+                else if (powerupID == 2)
+                {
+
+                }
             }
 
            
