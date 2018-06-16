@@ -8,7 +8,8 @@ public class Powerup : MonoBehaviour {
     [SerializeField]
     private int powerupID;
 
-	void Update () {
+	void Update ()
+    {
         transform.Translate(Vector3.down * Time.deltaTime * _speed);
 	}
 

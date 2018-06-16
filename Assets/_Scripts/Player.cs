@@ -10,6 +10,7 @@ public class Player : MonoBehaviour
     public GameObject laserPrefab;
     public GameObject triLaserPrefab;
     public float firerate;
+    public int lives;
     private float _nextFire = 0.0f;
 
     private void Start()
@@ -102,6 +103,21 @@ public class Player : MonoBehaviour
     {
         yield return new WaitForSeconds(5.0f);
         speedBoostOn = false;
+    }
+
+    private void OnTriggerEnter2D(Collider2D other)
+    {
+        if (other.tag == "Enemy")
+        {
+            lives = lives - 1;
+            Debug.Log("Current lives " + lives);
+
+            if (lives <= 0)
+            {
+                Destroy(this.gameObject);
+                Debug.Log("Game Over");
+            }
+        }
     }
 
 }
