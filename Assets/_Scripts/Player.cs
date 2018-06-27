@@ -6,16 +6,45 @@ public class Player : MonoBehaviour
 {
     public bool canTripleShot = false;
     public bool speedBoostOn = false;
+    public bool shieldUp = false;
+
+    public int lives;
     public float speed;
+    public float firerate;
+    private float _nextFire = 0.0f;
+
     public GameObject laserPrefab;
     public GameObject triLaserPrefab;
-    public float firerate;
-    public int lives;
-    private float _nextFire = 0.0f;
+    public GameObject DeathAnim;
+    public GameObject Shield;
+    public GameObject titleScreen;
+
+    private UIManager _uiManager;
+    private GameManager _gameManager;
+    private SpawnManager _spawnManager;
+    private AudioSource _audioSource;
 
     private void Start()
     {
         transform.position = new Vector3(0, 0, 0);
+
+        _uiManager = GameObject.Find("Canvas").GetComponent<UIManager>();
+
+        if (_uiManager != null)
+        {
+            _uiManager.UpdateLives(lives);
+        }
+
+        _gameManager = GameObject.Find("GameManager").GetComponent<GameManager>();
+
+        _spawnManager = GameObject.Find("SpawnManager").GetComponent<SpawnManager>();
+
+        if (_spawnManager != null)
+        {
+            _spawnManager.StartSpawnRoutines();
+        }
+
+        _audioSource = GetComponent<AudioSource>();
     }
 
     private void Update()
@@ -68,6 +97,7 @@ public class Player : MonoBehaviour
     {
         if (Time.time > _nextFire)
         {
+            _audioSource.Play();
             if (canTripleShot == true)
             {
                 Instantiate(triLaserPrefab, transform.position + new Vector3(0, 1.13f, 0), Quaternion.identity);
@@ -77,6 +107,33 @@ public class Player : MonoBehaviour
             {
                 Instantiate(laserPrefab, transform.position + new Vector3(0, 1.13f, 0), Quaternion.identity);
                 _nextFire = Time.time + firerate;
+            }
+        }
+    }
+
+    private void OnTriggerEnter2D(Collider2D other)
+    {
+        if (other.tag == "Enemy")
+        {
+
+            if (shieldUp == true)
+           {
+                shieldUp = false;
+                Shield.SetActive(false);
+                Debug.Log("Shield worked!");
+           }
+            else
+            {
+                lives = lives - 1;
+                _uiManager.UpdateLives(lives);
+            }
+
+            if (lives <= 0)
+            {
+                Instantiate(DeathAnim, transform.position, Quaternion.identity);
+                _gameManager.gameOver = true;
+                _uiManager.ShowTitleScreen();
+                Destroy(this.gameObject);
             }
         }
     }
@@ -93,6 +150,13 @@ public class Player : MonoBehaviour
         StartCoroutine(SpeedBoostRoutine());
     }
 
+    public void ShieldOn()
+    {
+        shieldUp = true;
+        Shield.SetActive(true);
+        StartCoroutine(ShieldOnRoutine());
+    }
+
     public IEnumerator TripleShotPowerDownRoutine()
     {
         yield return new WaitForSeconds(5.0f);
@@ -105,19 +169,10 @@ public class Player : MonoBehaviour
         speedBoostOn = false;
     }
 
-    private void OnTriggerEnter2D(Collider2D other)
+    public IEnumerator ShieldOnRoutine()
     {
-        if (other.tag == "Enemy")
-        {
-            lives = lives - 1;
-            Debug.Log("Current lives " + lives);
-
-            if (lives <= 0)
-            {
-                Destroy(this.gameObject);
-                Debug.Log("Game Over");
-            }
-        }
+        yield return new WaitForSeconds(5.0f);
+        Shield.SetActive(false);
+        shieldUp = false;
     }
-
 }

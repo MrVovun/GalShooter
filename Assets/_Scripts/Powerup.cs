@@ -7,11 +7,18 @@ public class Powerup : MonoBehaviour {
     private float _speed = 2.0f;
     [SerializeField]
     private int powerupID;
+    [SerializeField]
+    private AudioClip _clip;
 
-	void Update ()
+    void Update ()
     {
         transform.Translate(Vector3.down * Time.deltaTime * _speed);
-	}
+
+        if (transform.position.y < -8)
+        {
+            Destroy(this.gameObject);
+        }
+    }
 
     private void OnTriggerEnter2D(Collider2D other)
     {
@@ -31,12 +38,10 @@ public class Powerup : MonoBehaviour {
                 }
                 else if (powerupID == 2)
                 {
-
+                    _player.ShieldOn();
                 }
             }
-
-           
-
+            AudioSource.PlayClipAtPoint(_clip, Camera.main.transform.position);
             Destroy(this.gameObject);
         }
     }
