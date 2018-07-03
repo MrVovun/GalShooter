@@ -8,6 +8,7 @@ public class Player : MonoBehaviour
     public bool speedBoostOn = false;
     public bool shieldUp = false;
 
+    private int hitCount = 0;
     public int lives;
     public float speed;
     public float firerate;
@@ -18,6 +19,9 @@ public class Player : MonoBehaviour
     public GameObject DeathAnim;
     public GameObject Shield;
     public GameObject titleScreen;
+
+    [SerializeField]
+    private GameObject[] _engines;
 
     private UIManager _uiManager;
     private GameManager _gameManager;
@@ -45,6 +49,8 @@ public class Player : MonoBehaviour
         }
 
         _audioSource = GetComponent<AudioSource>();
+
+        hitCount = 0;
     }
 
     private void Update()
@@ -126,6 +132,16 @@ public class Player : MonoBehaviour
             {
                 lives = lives - 1;
                 _uiManager.UpdateLives(lives);
+                hitCount++;
+
+                if (hitCount == 1)
+                {
+                    _engines[0].SetActive(true);
+                }
+                else if (hitCount == 2)
+                {
+                    _engines[1].SetActive(true);
+                }
             }
 
             if (lives <= 0)

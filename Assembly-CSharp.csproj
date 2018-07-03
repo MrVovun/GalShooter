@@ -63,6 +63,7 @@
     <Compile Include="Assets\_Scripts\GameManager.cs" />
     <Compile Include="Assets\_Scripts\Laser.cs" />
     <Compile Include="Assets\_Scripts\Player.cs" />
+    <Compile Include="Assets\_Scripts\PlayerAnimation.cs" />
     <Compile Include="Assets\_Scripts\Powerup.cs" />
     <Compile Include="Assets\_Scripts\SpawnManager.cs" />
     <Compile Include="Assets\_Scripts\UIManager.cs" />
